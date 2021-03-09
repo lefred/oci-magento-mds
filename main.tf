@@ -1,3 +1,25 @@
+
+
+locals {
+  vcn_id = var.existing_vcn_ocid == "" ? oci_core_virtual_network.mysqlvcn[0].id : var.existing_vcn_ocid
+  internet_gateway_id = var.existing_internet_gateway_ocid == "" ? oci_core_internet_gateway.internet_gateway[0].id : var.existing_internet_gateway_ocid
+  nat_gateway_id = var.existing_nat_gateway_ocid == "" ? oci_core_nat_gateway.nat_gateway[0].id : var.existing_nat_gateway_ocid
+  public_route_table_id = var.existing_public_route_table_ocid == "" ? oci_core_route_table.public_route_table[0].id : var.existing_public_route_table_ocid
+  private_route_table_id = var.existing_private_route_table_ocid == "" ? oci_core_route_table.private_route_table[0].id : var.existing_private_route_table_ocid
+  private_subnet_id = var.existing_private_subnet_ocid == "" ? oci_core_subnet.private[0].id : var.existing_private_subnet_ocid
+  public_subnet_id = var.existing_public_subnet_ocid == "" ? oci_core_subnet.public[0].id : var.existing_public_subnet_ocid
+  private_security_list_id = var.existing_private_security_list_ocid == "" ? oci_core_security_list.private_security_list[0].id : var.existing_private_security_list_ocid
+  public_security_list_id = var.existing_public_security_list_ocid == "" ? oci_core_security_list.public_security_list[0].id : var.existing_public_security_list_ocid
+  private_security_list_opendistro_id = var.existing_private_security_list_opendistro_ocid == "" ? oci_core_security_list.private_security_list_opendistro[0].id : var.existing_private_security_list_opendistro_ocid
+  public_security_list_http_id = var.existing_public_security_list_http_ocid == "" ? oci_core_security_list.public_security_list_http[0].id : var.existing_public_security_list_http_ocid
+  ssh_key = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
+  ssh_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
+  private_key_to_show = var.ssh_private_key_path == "" ? local.ssh_private_key : var.ssh_private_key_path
+  bastion_private_key = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
+  bastion_public_key  = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
+  bastion_ip          = var.bastion_host == null ? split(",", module.web.public_ip)[0] : var.bastion_host
+}
+
 data "oci_core_images" "images_for_shape" {
     compartment_id = var.compartment_ocid
     operating_system = "Oracle Linux"
@@ -29,48 +51,58 @@ resource "oci_core_virtual_network" "mysqlvcn" {
   compartment_id = var.compartment_ocid
   display_name = var.vcn
   dns_label = "mysqlvcn"
+
+  count = var.existing_vcn_ocid == "" ? 1 : 0
 }
 
 
 resource "oci_core_internet_gateway" "internet_gateway" {
   compartment_id = var.compartment_ocid
   display_name = "internet_gateway"
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
+  vcn_id = local.vcn_id
+
+  count = var.existing_internet_gateway_ocid == "" ? 1 : 0
 }
 
 
 resource "oci_core_nat_gateway" "nat_gateway" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.mysqlvcn.id
+  vcn_id         = local.vcn_id
   display_name   = "nat_gateway"
+
+  count = var.existing_nat_gateway_ocid == "" ? 1 : 0
 }
 
 
 resource "oci_core_route_table" "public_route_table" {
   compartment_id = var.compartment_ocid
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
+  vcn_id = local.vcn_id
   display_name = "RouteTableForMySQLPublic"
   route_rules {
     cidr_block = "0.0.0.0/0"
-    network_entity_id = oci_core_internet_gateway.internet_gateway.id
+    network_entity_id = local.internet_gateway_id
   }
+
+  count = var.existing_public_route_table_ocid == "" ? 1 : 0
 }
 
 
 resource "oci_core_route_table" "private_route_table" {
   compartment_id = var.compartment_ocid
-  vcn_id         = oci_core_virtual_network.mysqlvcn.id
+  vcn_id         = local.vcn_id
   display_name   = "RouteTableForMySQLPrivate"
   route_rules {
     destination       = "0.0.0.0/0"
-    network_entity_id = oci_core_nat_gateway.nat_gateway.id
+    network_entity_id = local.nat_gateway_id
   }
+
+  count = var.existing_private_route_table_ocid == "" ? 1 : 0
 }
 
 resource "oci_core_security_list" "public_security_list" {
   compartment_id = var.compartment_ocid
   display_name = "Allow Public SSH Connections to Magento"
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
+  vcn_id = local.vcn_id
   egress_security_rules {
     destination = "0.0.0.0/0"
     protocol = "6"
@@ -83,12 +115,14 @@ resource "oci_core_security_list" "public_security_list" {
     protocol = "6"
     source   = "0.0.0.0/0"
   }
+
+  count = var.existing_public_security_list_ocid == "" ? 1 : 0
 }
 
-resource "oci_core_security_list" "private_security_list_elastic" {
+resource "oci_core_security_list" "private_security_list_opendistro" {
   compartment_id = var.compartment_ocid
-  display_name = "Allow ElasticSearch"
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
+  display_name = "Allow OpenDistro"
+  vcn_id = local.vcn_id
   egress_security_rules {
     destination = "10.0.1.0/24"
     protocol = "6"
@@ -101,12 +135,14 @@ resource "oci_core_security_list" "private_security_list_elastic" {
     protocol = "6"
     source   = "10.0.0.0/24"
   }
+
+  count = var.existing_private_security_list_opendistro_ocid == "" ? 1 : 0
 }
 
 resource "oci_core_security_list" "public_security_list_http" {
   compartment_id = var.compartment_ocid
   display_name = "Allow HTTP(S) to Magento"
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
+  vcn_id = local.vcn_id
   egress_security_rules {
     destination = "0.0.0.0/0"
     protocol = "6"
@@ -127,12 +163,14 @@ resource "oci_core_security_list" "public_security_list_http" {
     protocol = "6"
     source   = "0.0.0.0/0"
   }
+
+  count = var.existing_public_security_list_http_ocid == "" ? 1 : 0
 }
 
 resource "oci_core_security_list" "private_security_list" {
   compartment_id = var.compartment_ocid
   display_name   = "Private"
-  vcn_id         = oci_core_virtual_network.mysqlvcn.id
+  vcn_id         = local.vcn_id
 
   egress_security_rules {
     destination = "0.0.0.0/0"
@@ -166,6 +204,8 @@ resource "oci_core_security_list" "private_security_list" {
     protocol = "6"
     source   = var.vcn_cidr
   }
+
+  count = var.existing_private_security_list_ocid == "" ? 1 : 0
 }
 
 resource "tls_private_key" "public_private_key_pair" {
@@ -176,23 +216,27 @@ resource "oci_core_subnet" "public" {
   cidr_block = cidrsubnet(var.vcn_cidr, 8, 0)
   display_name = "mysql_public_subnet"
   compartment_id = var.compartment_ocid
-  vcn_id = oci_core_virtual_network.mysqlvcn.id
-  route_table_id = oci_core_route_table.public_route_table.id
-  security_list_ids = [oci_core_security_list.public_security_list.id, oci_core_security_list.public_security_list_http.id]
-  dhcp_options_id = oci_core_virtual_network.mysqlvcn.default_dhcp_options_id
+  vcn_id = local.vcn_id
+  route_table_id = local.public_route_table_id
+  security_list_ids = [local.public_security_list_id, local.public_security_list_http_id]
+  #dhcp_options_id = oci_core_virtual_network.mysqlvcn.default_dhcp_options_id
   dns_label = "mysqlpub"
+
+  count = var.existing_public_subnet_ocid == "" ? 1 : 0
 }
 
 resource "oci_core_subnet" "private" {
   cidr_block                 = cidrsubnet(var.vcn_cidr, 8, 1)
   display_name               = "mysql_private_subnet"
   compartment_id             = var.compartment_ocid
-  vcn_id                     = oci_core_virtual_network.mysqlvcn.id
-  route_table_id             = oci_core_route_table.private_route_table.id
-  security_list_ids          = [oci_core_security_list.private_security_list.id,  oci_core_security_list.private_security_list_elastic.id]
-  dhcp_options_id            = oci_core_virtual_network.mysqlvcn.default_dhcp_options_id
+  vcn_id                     = local.vcn_id
+  route_table_id             = local.private_route_table_id
+  security_list_ids          = [local.private_security_list_id,  local.private_security_list_opendistro_id]
+  #dhcp_options_id            = oci_core_virtual_network.mysqlvcn.default_dhcp_options_id
   prohibit_public_ip_on_vnic = "true"
   dns_label                  = "mysqlpriv"
+
+  count = var.existing_private_subnet_ocid == "" ? 1 : 0
 }
 
 module "mds-instance" {
@@ -202,55 +246,60 @@ module "mds-instance" {
     availability_domain = data.template_file.ad_names.*.rendered[0]
     configuration_id = data.oci_mysql_mysql_configurations.shape.configurations[0].id
     compartment_ocid = var.compartment_ocid
-    subnet_id = oci_core_subnet.private.id
-    display_name = "MySQLInstance"
+    subnet_id = local.private_subnet_id
+    display_name = var.mds_instance_name
+    existing_mds_instance_id  = var.existing_mds_instance_ocid
 }
 
-module "elastic" {
-  source                = "./modules/elastic"
-  availability_domain   = data.template_file.ad_names.*.rendered[0]
-  display_name          =  "ElasticSearch"
+module "opendistro" {
+  source                = "./modules/opendistro"
+  availability_domain   = data.template_file.ad_names.*.rendered
+  display_name          = "OpenDistro"
   compartment_ocid      = var.compartment_ocid
   image_id              = var.node_image_id == "" ? data.oci_core_images.images_for_shape.images[0].id : var.node_image_id
   shape                 = var.node_shape
   label_prefix          = var.label_prefix
-  subnet_id             = oci_core_subnet.private.id
-  ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
-  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
-  bastion_private_key   = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
-  bastion_public_key    = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
-  bastion_ip            = var.bastion_host == null ? module.web.public_ip : var.bastion_host
+  subnet_id             = local.private_subnet_id
+  ssh_authorized_keys   = local.ssh_key
+  ssh_private_key       = local.ssh_private_key
+  bastion_private_key   = local.bastion_private_key
+  bastion_public_key    = local.bastion_public_key
+  bastion_ip            = local.bastion_ip
 }
 
 module "web" {
   source                = "./modules/web"
-  availability_domain   = data.template_file.ad_names.*.rendered[0]
-  display_name          =  "Magento"
+  availability_domains   = data.template_file.ad_names.*.rendered
+  display_name          = var.magento_instance_name
   compartment_ocid      = var.compartment_ocid
   image_id              = var.node_image_id == "" ? data.oci_core_images.images_for_shape.images[0].id : var.node_image_id
   shape                 = var.node_shape
   label_prefix          = var.label_prefix
-  subnet_id             = oci_core_subnet.public.id
-  ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
-  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
+  subnet_id             = local.public_subnet_id
+  ssh_authorized_keys   = local.ssh_key
+  ssh_private_key       = local.ssh_private_key
   mds_ip                = module.mds-instance.private_ip
   admin_password        = var.admin_password
   admin_username        = var.admin_username
   magento_schema        = var.magento_schema
   magento_name          = var.magento_name
   magento_password      = var.magento_password
+  nb_of_webserver       = var.nb_of_webserver
+  use_AD                = var.use_AD
+  dedicated             = var.dedicated
 }
 
 module "magento" {
   source                = "./modules/magento"
-  ssh_authorized_keys   = var.ssh_authorized_keys_path == "" ? tls_private_key.public_private_key_pair.public_key_openssh : file(var.ssh_authorized_keys_path)
-  ssh_private_key       = var.ssh_private_key_path == "" ? tls_private_key.public_private_key_pair.private_key_pem : file(var.ssh_private_key_path)
+  ssh_authorized_keys   = local.ssh_key
+  ssh_private_key       = local.ssh_private_key
   mds_ip                = module.mds-instance.private_ip
   admin_password        = var.admin_password
   admin_username        = var.admin_username
   magento_schema        = var.magento_schema
   magento_name          = var.magento_name
   magento_password      = var.magento_password
-  elastic_ip            = module.elastic.private_ip
+  opendistro_ip         = module.opendistro.private_ip
   web_ip                = module.web.public_ip
+  nb_of_webserver       = var.nb_of_webserver
 }

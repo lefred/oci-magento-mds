@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql Shell."
-  default     = "8.0.22"
+  default     = "8.0.23"
 }
 
 variable "ssh_authorized_keys" {
@@ -43,11 +43,16 @@ variable "mds_ip" {
     description = "Private IP of the MDS Instance"
 }
 
-variable "elastic_ip" {
-    description = "Private IP of the ElasticSearch Instance"
+variable "opendistro_ip" {
+    description = "Private IP of the OpenDistro Instance"
 }
 
 variable "web_ip" {
-  description = "IP of thei Web Instance."
+  description = "IP of the Web Instance."
   default     = ""
+}
+
+variable "nb_of_webserver" {
+    description = "Amount of Webservers to deploy"
+    default = 1
 }

@@ -1,7 +1,7 @@
 ## DATASOURCE
 # Init Script Files
-data "template_file" "install_elastic" {
-  template = file("${path.module}/scripts/install_elastic.sh")
+data "template_file" "install_opendistro" {
+  template = file("${path.module}/scripts/install_opendistro.sh")
 
 }
 
@@ -10,15 +10,15 @@ data "template_file" "configure_local_security" {
 }
 
 locals {
-  elastic_script        = "~/install_elastic.sh"
+  opendistro_script        = "~/install_opendistro.sh"
   security_script   = "~/configure_local_security.sh"
 }
 
-resource "oci_core_instance" "ElasticSearch" {
-  availability_domain = var.availability_domain
+resource "oci_core_instance" "OpenDistro" {
   compartment_id      = var.compartment_ocid
   display_name        = "${var.label_prefix}${var.display_name}"
   shape               = var.shape
+  availability_domain = var.availability_domain[0]
 
   create_vnic_details {
     subnet_id        = var.subnet_id
@@ -37,8 +37,8 @@ resource "oci_core_instance" "ElasticSearch" {
   }
 
   provisioner "file" {
-    content     = data.template_file.install_elastic.rendered
-    destination = local.elastic_script
+    content     = data.template_file.install_opendistro.rendered
+    destination = local.opendistro_script
 
     connection  {
       type        = "ssh"
@@ -88,8 +88,8 @@ resource "oci_core_instance" "ElasticSearch" {
     }
 
     inline = [
-       "chmod +x ${local.elastic_script}",
-       "sudo ${local.elastic_script}",
+       "chmod +x ${local.opendistro_script}",
+       "sudo ${local.opendistro_script}",
        "chmod +x ${local.security_script}",
        "sudo ${local.security_script}"
     ]

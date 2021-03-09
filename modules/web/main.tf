@@ -1,5 +1,14 @@
 ## DATASOURCE
 # Init Script Files
+
+locals {
+  php_script           = "~/install_php74.sh"
+  magento_script       = "~/install_magento.sh"
+  security_script      = "~/configure_local_security.sh"
+  create_magento_db    = "~/create_magento_db.sh"
+  fault_domains_per_ad = 3
+}
+
 data "template_file" "install_php" {
   template = file("${path.module}/scripts/install_php74.sh")
 
@@ -26,7 +35,7 @@ data "template_file" "configure_local_security" {
 
 data "template_file" "create_magento_db" {
   template = file("${path.module}/scripts/create_magento_db.sh")
-
+  count    = var.nb_of_webserver
   vars = {
     admin_password   = var.admin_password
     admin_username   = var.admin_username
@@ -34,30 +43,25 @@ data "template_file" "create_magento_db" {
     magento_password = var.magento_password
     magento_schema   = var.magento_schema
     mds_ip           = var.mds_ip
+    dedicated       = var.dedicated
+    instancenb      = count.index+1
   }
-}
-
-
-
-locals {
-  php_script        = "~/install_php74.sh"
-  magento_script    = "~/install_magento.sh"
-  security_script   = "~/configure_local_security.sh"
-  create_magento_db = "~/create_magento_db.sh"
 }
 
 resource "oci_core_instance" "Magento" {
 
-  availability_domain = var.availability_domain
+  count               = var.nb_of_webserver
+  availability_domain = var.use_AD == false ? var.availability_domains[0] : var.availability_domains[count.index%length(var.availability_domains)]
+  fault_domain        = var.use_AD == true ? "FAULT-DOMAIN-1" : "FAULT-DOMAIN-${(count.index  % local.fault_domains_per_ad) +1}"
   compartment_id      = var.compartment_ocid
-  display_name        = "${var.label_prefix}${var.display_name}"
+  display_name        = "${var.label_prefix}${var.display_name}${count.index+1}"
   shape               = var.shape
 
   create_vnic_details {
     subnet_id        = var.subnet_id
-    display_name     = "${var.label_prefix}${var.display_name}"
+    display_name     = "${var.label_prefix}${var.display_name}${count.index+1}"
     assign_public_ip = var.assign_public_ip
-    hostname_label   = var.display_name
+    hostname_label   = "${var.display_name}${count.index+1}"
   }
 
   metadata = {
@@ -115,7 +119,7 @@ resource "oci_core_instance" "Magento" {
   }
 
  provisioner "file" {
-    content     = data.template_file.create_magento_db.rendered
+    content     = data.template_file.create_magento_db[count.index].rendered
     destination = local.create_magento_db
 
     connection  {
@@ -140,7 +144,7 @@ resource "oci_core_instance" "Magento" {
       private_key = var.ssh_private_key
 
     }
-   
+
     inline = [
        "chmod +x ${local.php_script}",
        "sudo ${local.php_script}",

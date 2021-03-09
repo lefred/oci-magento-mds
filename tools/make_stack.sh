@@ -2,4 +2,6 @@
 
 # Script to create a stack to use in OCI Resource Manager
 
-zip -r stack_magento_mds.zip stack
+cd stack
+zip -r ../stack_magento_mds.zip *
+cd -

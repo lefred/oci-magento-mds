@@ -15,6 +15,66 @@ variable "region" {
   description = "OCI Region"
 }
 
+variable "existing_vcn_ocid" {
+  description = "OCID of an existing VCN to use"
+  default     = ""
+}
+
+variable "existing_public_subnet_ocid" {
+  description = "OCID of an existing public subnet to use"
+  default     = ""
+}
+
+variable "existing_private_subnet_ocid" {
+  description = "OCID of an existing private subnet to use"
+  default     = ""
+}
+
+variable "existing_internet_gateway_ocid" {
+  description = "OCID of an existing internet gateway to use"
+  default     = ""
+}
+
+variable "existing_nat_gateway_ocid" {
+  description = "OCID of an existing NAT gateway to use"
+  default     = ""
+}
+
+variable "existing_public_route_table_ocid" {
+  description = "OCID of an existing public route table to use"
+  default     = ""
+}
+
+variable "existing_private_route_table_ocid" {
+  description = "OCID of an existing private route table to use"
+  default     = ""
+}
+
+variable "existing_public_security_list_ocid" {
+  description = "OCID of an existing public security list (ssh) to use"
+  default     = ""
+}
+
+variable "existing_public_security_list_http_ocid" {
+  description = "OCID of an existing security list allowing https and https to use"
+  default     = ""
+}
+
+variable "existing_private_security_list_ocid" {
+  description = "OCID of an existing private security list allowing MySQL access to use"
+  default     = ""
+}
+
+variable "existing_private_security_list_opendistro_ocid" {
+  description = "OCID of an existing private security list allowing OpenDistro access to use"
+  default     = ""
+}
+
+variable "existing_mds_instance_ocid" {
+  description = "OCID of an existing MDS instance to use"
+  default     = ""
+}
+
 variable "vcn" {
   description = "VCN Name"
   default     = "mysql_vcn"
@@ -42,7 +102,7 @@ variable "node_image_id" {
 
 variable "node_shape" {
   description = "Instance shape to use for master instance. "
-  default     = "VM.Standard1.1"
+  default     = "VM.Standard.E2.1"
 }
 
 variable "label_prefix" {
@@ -81,22 +141,49 @@ variable "mysql_shape" {
 
 variable "magento_name" {
   description = "Magento Database User Name."
-  default     = "magento"  
+  default     = "magento"
 }
 
 variable "magento_password" {
   description = "Magento Database User Password."
-  default     = "MyMagentoPassw0rd]"  
+  default     = "MyMagentoPassw0rd]"
 }
 
 variable "magento_schema" {
   description = "Magento MySQL Schema"
-  default     = "magento"  
+  default     = "magento"
 }
 
 variable "bastion_host" {
   description = "IP fo the bastion host"
   default = null
+}
+
+variable "mds_instance_name" {
+  description = "Name of the MDS instance"
+  default     = "MySQLInstance"
+}
+
+variable "magento_instance_name" {
+  description = "Name of the WordPress compute instance"
+  default     = "MagentoServer"
+}
+
+variable "nb_of_webserver" {
+    description = "Amount of Webservers to deploy"
+    default = 1
+}
+
+variable "use_AD" {
+  description = "Using different Availability Domain, by default use of Fault Domain"
+  type        = bool
+  default     = false
+}
+
+variable "dedicated" {
+  description = "Create a dedicated user and a dedicated database for each Webservers"
+  type        = bool
+  default     = false
 }
 
 

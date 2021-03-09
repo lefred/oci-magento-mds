@@ -1,8 +1,23 @@
-#!/bin/bash 
+#!/bin/bash
+
+DEDICATED=${dedicated}
+INSTANCE=${instancenb}
+
+if [ "$DEDICATED" == "true" ]
+then
+   magentoschema="${magento_schema}$INSTANCE"
+   magentoname="${magento_name}$INSTANCE"
+else
+   magentoschema="${magento_schema}"
+   magentoname="${magento_name}"
+fi
 
 
-mysqlsh ${admin_username}:'${admin_password}'@${mds_ip} --sql -e "CREATE DATABASE ${magento_schema};"
-mysqlsh ${admin_username}:'${admin_password}'@${mds_ip} --sql -e "CREATE USER ${magento_name} identified by '${magento_password}';"
-mysqlsh ${admin_username}:'${admin_password}'@${mds_ip} --sql -e "GRANT ALL PRIVILEGES ON ${magento_schema}.* TO ${magento_name};"
+mysqlsh --user ${admin_username} --password=${admin_password} --host ${mds_ip} --sql -e "CREATE DATABASE $magentoschema;"
+mysqlsh --user ${admin_username} --password=${admin_password} --host ${mds_ip} --sql -e "CREATE USER $magentoname identified by '${magento_password}';"
+mysqlsh --user ${admin_username} --password=${admin_password} --host ${mds_ip} --sql -e "GRANT ALL PRIVILEGES ON $magentoschema.* TO $magentoname;"
 
 echo "Magento Database and User created !"
+echo "MAGENTO USER = $magentoname"
+echo "MAGENTO SCHEMA = $magentoschema"
+

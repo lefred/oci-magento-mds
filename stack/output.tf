@@ -18,6 +18,6 @@ output "opendistro_private_ip" {
   value = module.opendistro.private_ip
 }
 
-output "ssh_private_key" {
+output "instance_ssh_keys" {
   value = local.private_key_to_show
 }
