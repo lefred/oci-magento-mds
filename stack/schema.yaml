@@ -1,12 +1,12 @@
 title: "Magento on OCI with MDS"
-stackDescription: "Magento Deployment on OCI using MySQL Database Service"
+dscription: "Magento Deployment on OCI using MySQL Database Service"
 schemaVersion: 1.5.0
 version: "20210315"
 locale: "en"
 
 
 variableGroups:
-  - title: General Configuration
+  - title: "General Configuration"
     visible: false
     variables:
       - tenancy_ocid
@@ -279,4 +279,3 @@ variables:
     required: true
     title: Magento Admin's Email
     description: Email of Magento's Admin
-    pattern: "^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$"
