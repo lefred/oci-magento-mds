@@ -247,6 +247,9 @@ variables:
     required: true
     title: Magento Admin's Login
     description: Login of Magento's Admin
+    minLength: 2
+    maxLength: 14
+    pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
 
   magento_admin_password:
     type: password
@@ -260,12 +263,16 @@ variables:
     required: true
     title: Magento Admin's Firstname
     description: Firstname of Magento's Admin
+    minLength: 2
+    pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
 
   magento_admin_lastname:
     type: string
     required: true
     title: Magento Admin's Lastname
     description: Lastname of Magento's Admin
+    minLength: 2
+    pattern: "^[a-zA-Z][a-zA-Z0-9]+$"
 
   magento_admin_email:
     type: string
