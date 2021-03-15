@@ -21,3 +21,12 @@ output "opendistro_private_ip" {
 output "ssh_private_key" {
   value = local.private_key_to_show
 }
+
+output "magento_admin_login" {
+  value = var.magento_admin_login
+}
+
+output "magento_admin_password" {
+  value = var.magento_admin_password
+}
+

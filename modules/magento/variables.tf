@@ -56,3 +56,27 @@ variable "nb_of_webserver" {
     description = "Amount of Webservers to deploy"
     default = 1
 }
+
+variable "magento_admin_login" {
+  description = "Magento Admin Username"
+  default     = "admin"
+}
+
+variable "magento_admin_password" {
+  description = "Magento Admin Password"
+  default     = "AdminPassw0rd!"
+}
+
+variable "magento_admin_firstname" {
+  description = "Magento Admin Firstname"
+  default     = "Mangento"
+}
+
+variable "magento_admin_lastname" {
+  description = "Magento Admin Lastname"
+  default     = "Admin"
+}
+
+variable "magento_admin_email" {
+  description = "Magento Admin Email"
+}

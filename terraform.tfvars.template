@@ -17,3 +17,5 @@ admin_username = "admin"
 admin_password = "MyPassw0rd!"
 
 node_shape = "VM.Standard1.1"
+
+magento_admin_email = "magento@lefred.be"

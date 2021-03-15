@@ -236,3 +236,31 @@ variables:
     required: true
     title: MySQL Magento Schema
     description: MySQL Schema/Database for Magento
+
+  magento_admin_login:
+
+  magento_admin_password:
+    type: password
+    required: true
+    title: Magento Admin User's Password
+    description: Password for Magento Admin User
+    pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\\\"\\\\|,.<>\\/?]).{8,32}$"
+
+  magento_admin_firstname:
+    type: string
+    required: true
+    title: Magento Admin's Firstname
+    description: Firstname of Magento's Admin
+
+  magento_admin_lastname:
+    type: string
+    required: true
+    title: Magento Admin's Lastname
+    description: Lastname of Magento's Admin
+
+  magento_admin_email:
+    type: string
+    required: true
+    title: Magento Admin's Email
+    description: Email of Magento's Admin
+    pattern: "^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$"

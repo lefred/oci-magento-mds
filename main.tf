@@ -290,16 +290,21 @@ module "web" {
 }
 
 module "magento" {
-  source                = "./modules/magento"
-  ssh_authorized_keys   = local.ssh_key
-  ssh_private_key       = local.ssh_private_key
-  mds_ip                = module.mds-instance.private_ip
-  admin_password        = var.admin_password
-  admin_username        = var.admin_username
-  magento_schema        = var.magento_schema
-  magento_name          = var.magento_name
-  magento_password      = var.magento_password
-  opendistro_ip         = module.opendistro.private_ip
-  web_ip                = module.web.public_ip
-  nb_of_webserver       = var.nb_of_webserver
+  source                  = "./modules/magento"
+  ssh_authorized_keys     = local.ssh_key
+  ssh_private_key         = local.ssh_private_key
+  mds_ip                  = module.mds-instance.private_ip
+  admin_password          = var.admin_password
+  admin_username          = var.admin_username
+  magento_schema          = var.magento_schema
+  magento_name            = var.magento_name
+  magento_password        = var.magento_password
+  opendistro_ip           = module.opendistro.private_ip
+  web_ip                  = module.web.public_ip
+  nb_of_webserver         = var.nb_of_webserver
+  magento_admin_login     = var.magento_admin_login
+  magento_admin_password  = var.magento_admin_password
+  magento_admin_firstname = var.magento_admin_firstname
+  magento_admin_lastname  = var.magento_admin_lastname
+  magento_admin_email     = var.magento_admin_email
 }

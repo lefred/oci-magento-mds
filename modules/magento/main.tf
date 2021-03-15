@@ -5,11 +5,16 @@ data "template_file" "install_magento" {
   template = file("${path.module}/scripts/deploy_magento.sh")
 
   vars = {
-    magento_name     = var.magento_name
-    magento_password = var.magento_password
-    magento_schema   = var.magento_schema
-    mds_ip           = var.mds_ip
-    opendistro_ip    = var.opendistro_ip
+    magento_name            = var.magento_name
+    magento_password        = var.magento_password
+    magento_schema          = var.magento_schema
+    mds_ip                  = var.mds_ip
+    opendistro_ip           = var.opendistro_ip
+    magento_admin_login     = var.magento_admin_login
+    magento_admin_password  = var.magento_admin_password
+    magento_admin_firstname = var.magento_admin_firstname
+    magento_admin_lastname  = var.magento_admin_lastname
+    magento_admin_email     = var.magento_admin_email
   }
 }
 
@@ -75,4 +80,3 @@ resource "null_resource" "MagentoDeploy" {
    }
 
 }
-
