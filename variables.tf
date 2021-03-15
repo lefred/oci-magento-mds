@@ -181,7 +181,7 @@ variable "magento_admin_password" {
 
 variable "magento_admin_firstname" {
   description = "Magento Admin Firstname"
-  default     = "Mangento"
+  default     = "Magento"
 }
 
 variable "magento_admin_lastname" {
@@ -191,6 +191,7 @@ variable "magento_admin_lastname" {
 
 variable "magento_admin_email" {
   description = "Magento Admin Email"
+  default = ""
 }
 
 variable "nb_of_webserver" {
