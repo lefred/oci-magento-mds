@@ -102,7 +102,7 @@ variable "node_image_id" {
 
 variable "node_shape" {
   description = "Instance shape to use for master instance. "
-  default     = "VM.Standard.E2.1"
+  default     = "VM.Standard.E3.Flex"
 }
 
 variable "label_prefix" {
@@ -136,7 +136,7 @@ variable "private_key_path" {
 }
 
 variable "mysql_shape" {
-    default = "VM.Standard.E2.1"
+    default = "MySQL.VM.Standard.E3.1.8GB"
 }
 
 variable "magento_name" {
