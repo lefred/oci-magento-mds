@@ -239,6 +239,8 @@ resource "oci_core_subnet" "private" {
   count = var.existing_private_subnet_ocid == "" ? 1 : 0
 }
 
+
+
 module "mds-instance" {
     source         = "./modules/mds-instance"
     admin_password = var.admin_password
