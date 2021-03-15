@@ -26,7 +26,7 @@ variableGroups:
       - magento_name
       - magento_password
       - magento_schema
-      - magento-admin_login
+      - magento_admin_login
       - magento_admin_password
       - magento_admin_firstname
       - magento_admin_lastname
@@ -243,6 +243,10 @@ variables:
     description: MySQL Schema/Database for Magento
 
   magento_admin_login:
+    type: string
+    required: true
+    title: Magento Admin's Login
+    description: Login of Magento's Admin
 
   magento_admin_password:
     type: password
