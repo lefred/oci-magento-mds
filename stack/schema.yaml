@@ -1,7 +1,7 @@
 title: "Magento on OCI with MDS"
 stackDescription: "Magento Deployment on OCI using MySQL Database Service"
-schemaVersion: 1.4.0
-version: "20210309"
+schemaVersion: 1.5.0
+version: "20210315"
 locale: "en"
 
 
