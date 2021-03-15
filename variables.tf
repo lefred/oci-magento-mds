@@ -176,7 +176,6 @@ variable "magento_admin_login" {
 
 variable "magento_admin_password" {
   description = "Magento Admin Password"
-  default     = "AdminPassw0rd!"
 }
 
 variable "magento_admin_firstname" {
