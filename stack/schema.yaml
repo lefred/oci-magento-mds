@@ -26,6 +26,11 @@ variableGroups:
       - magento_name
       - magento_password
       - magento_schema
+      - magento-admin_login
+      - magento_admin_password
+      - magento_admin_firstname
+      - magento_admin_lastname
+      - magento_admin_email
 
   - title: Webservers
     visible: true
