@@ -146,7 +146,6 @@ variable "magento_name" {
 
 variable "magento_password" {
   description = "Magento Database User Password."
-  default     = "MyMagentoPassw0rd]"
 }
 
 variable "magento_schema" {
