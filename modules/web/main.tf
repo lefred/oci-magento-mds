@@ -30,6 +30,15 @@ data "template_file" "install_magento" {
 }
 
 data "template_file" "configure_local_security" {
+  data "oci_mysql_mysql_configurations" "shape" {
+    compartment_id = var.compartment_ocid
+    type = ["DEFAULT"]
+    shape_name = var.mysql_shape
+}mysql_shape = data "oci_mysql_mysql_configurations" "shape" {
+    compartment_id = var.compartment_ocid
+    type = ["DEFAULT"]
+    shape_name = var.mysql_shape
+}""
   template = file("${path.module}/scripts/configure_local_security.sh")
 }
 
@@ -47,6 +56,11 @@ data "template_file" "create_magento_db" {
     instancenb      = count.index+1
   }
 }
+data "oci_core_instance_configurations" "shape" {
+  compartment_id = var.compartment_ocid
+  type = ["DEFAULT"]
+  shape_name = var.shape
+}
 
 resource "oci_core_instance" "Magento" {
 
@@ -56,6 +70,7 @@ resource "oci_core_instance" "Magento" {
   compartment_id      = var.compartment_ocid
   display_name        = "${var.label_prefix}${var.display_name}${count.index+1}"
   shape               = var.shape
+  configuration_id    = data.oci_core_instance_configurations.shape.configurations[0].id
 
   create_vnic_details {
     subnet_id        = var.subnet_id
