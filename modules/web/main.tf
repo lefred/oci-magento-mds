@@ -50,8 +50,6 @@ data "template_file" "create_magento_db" {
 
 data "oci_core_instance_configurations" "shape" {
   compartment_id = var.compartment_ocid
-  type = ["DEFAULT"]
-  shape_name = var.shape
 }
 
 resource "oci_core_instance" "Magento" {
