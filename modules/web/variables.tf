@@ -99,3 +99,12 @@ variable "dedicated" {
   default     = false
 }
 
+variable "instance_shape_config_memory_in_gbs" {
+  description =  "Amount of Memory"
+  default     = 16
+}
+
+variable "instance_shape_config_ocpus" {
+  description =  "Amount of OCPUS"
+  default     = 2
+}

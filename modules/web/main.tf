@@ -48,10 +48,6 @@ data "template_file" "create_magento_db" {
   }
 }
 
-data "oci_core_instance_configurations" "shape" {
-  compartment_id = var.compartment_ocid
-}
-
 resource "oci_core_instance" "Magento" {
 
   count               = var.nb_of_webserver
@@ -60,7 +56,12 @@ resource "oci_core_instance" "Magento" {
   compartment_id      = var.compartment_ocid
   display_name        = "${var.label_prefix}${var.display_name}${count.index+1}"
   shape               = var.shape
-  configuration_id    = data.oci_core_instance_configurations.shape.configurations[0].id
+
+  shape_config {
+        #Optional
+        memory_in_gbs = var.instance_shape_config_memory_in_gbs
+        ocpus = var.instance_shape_config_ocpus
+  }
 
   create_vnic_details {
     subnet_id        = var.subnet_id
