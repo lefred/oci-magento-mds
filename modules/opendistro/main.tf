@@ -20,6 +20,12 @@ resource "oci_core_instance" "OpenDistro" {
   shape               = var.shape
   availability_domain = var.availability_domain[0]
 
+  shape_config {
+        #Optional
+        memory_in_gbs = var.instance_shape_config_memory_in_gbs
+        ocpus = var.instance_shape_config_ocpus
+  }
+
   create_vnic_details {
     subnet_id        = var.subnet_id
     display_name     = "${var.label_prefix}${var.display_name}"
