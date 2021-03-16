@@ -30,15 +30,6 @@ data "template_file" "install_magento" {
 }
 
 data "template_file" "configure_local_security" {
-  data "oci_mysql_mysql_configurations" "shape" {
-    compartment_id = var.compartment_ocid
-    type = ["DEFAULT"]
-    shape_name = var.mysql_shape
-}mysql_shape = data "oci_mysql_mysql_configurations" "shape" {
-    compartment_id = var.compartment_ocid
-    type = ["DEFAULT"]
-    shape_name = var.mysql_shape
-}""
   template = file("${path.module}/scripts/configure_local_security.sh")
 }
 
@@ -56,6 +47,7 @@ data "template_file" "create_magento_db" {
     instancenb      = count.index+1
   }
 }
+
 data "oci_core_instance_configurations" "shape" {
   compartment_id = var.compartment_ocid
   type = ["DEFAULT"]
