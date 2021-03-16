@@ -251,6 +251,7 @@ module "mds-instance" {
     subnet_id = local.private_subnet_id
     display_name = var.mds_instance_name
     existing_mds_instance_id  = var.existing_mds_instance_ocid
+    mysql_shape = var.mysql_shape
 }
 
 module "opendistro" {
