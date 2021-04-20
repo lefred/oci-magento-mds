@@ -1,7 +1,7 @@
 title: "Magento on OCI with MDS"
 dscription: "Magento Deployment on OCI using MySQL Database Service"
-schemaVersion: 1.5.0
-version: "20210315"
+schemaVersion: 1.6.0
+version: "20210420"
 locale: "en"
 
 
@@ -31,6 +31,11 @@ variableGroups:
       - magento_admin_firstname
       - magento_admin_lastname
       - magento_admin_email
+
+  - title: Use HA for MDS
+    visibale: true
+    variables:
+      - deploy_mds_ha
 
   - title: Webservers
     visible: true
@@ -208,6 +213,11 @@ variables:
     title: MDS Admin User's Password
     description: Password for MySQL Database Service's admin user
     pattern: "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\\\"\\\\|,.<>\\/?]).{8,32}$"
+
+  deploy_mds_ha:
+    title: Deploy High Availability for MDS
+    type: boolean
+    default: false
 
 
   magento_password:
