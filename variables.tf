@@ -105,6 +105,16 @@ variable "node_shape" {
   default     = "VM.Standard.E3.Flex"
 }
 
+variable "node_flex_shape_ocpus" {
+  description = "Flex Instance shape OCPUs"
+  default = 1
+}
+
+variable "node_flex_shape_memory" {
+  description = "Flex Instance shape Memory (GB)"
+  default = 6
+}
+
 variable "label_prefix" {
   description = "To create unique identifier for multiple setup in a compartment."
   default     = ""

@@ -57,10 +57,12 @@ resource "oci_core_instance" "Magento" {
   display_name        = "${var.label_prefix}${var.display_name}${count.index+1}"
   shape               = var.shape
 
-  shape_config {
-        #Optional
-        memory_in_gbs = var.instance_shape_config_memory_in_gbs
-        ocpus = var.instance_shape_config_ocpus
+  dynamic "shape_config" {
+    for_each = local.is_flexible_node_shape ? [1] : []
+    content {
+      memory_in_gbs = var.flex_shape_memory
+      ocpus = var.flex_shape_ocpus
+    }
   }
 
   create_vnic_details {

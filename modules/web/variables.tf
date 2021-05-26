@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql Shell."
-  default     = "8.0.23"
+  default     = "8.0.25"
 }
 
 variable "compartment_ocid" {
@@ -99,12 +99,25 @@ variable "dedicated" {
   default     = false
 }
 
-variable "instance_shape_config_memory_in_gbs" {
-  description =  "Amount of Memory"
-  default     = 16
+variable "flex_shape_ocpus" {
+  description = "Flex Instance shape OCPUs"
+  default = 1
 }
 
-variable "instance_shape_config_ocpus" {
-  description =  "Amount of OCPUS"
-  default     = 2
+variable "flex_shape_memory" {
+  description = "Flex Instance shape Memory (GB)"
+  default = 6
+}
+
+locals {
+  compute_flexible_shapes = [
+    "VM.Standard.E3.Flex",
+    "VM.Standard.E4.Flex",
+    "VM.Standard.A1.Flex",
+    "VM.Optimized3.Flex"
+  ]
+}
+
+locals {
+  is_flexible_node_shape = contains(local.compute_flexible_shapes, var.shape)
 }

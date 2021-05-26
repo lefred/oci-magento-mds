@@ -269,6 +269,8 @@ module "opendistro" {
   bastion_private_key   = local.bastion_private_key
   bastion_public_key    = local.bastion_public_key
   bastion_ip            = local.bastion_ip
+  flex_shape_ocpus      = var.node_flex_shape_ocpus
+  flex_shape_memory     = var.node_flex_shape_memory
 }
 
 module "web" {
@@ -291,6 +293,8 @@ module "web" {
   nb_of_webserver       = var.nb_of_webserver
   use_AD                = var.use_AD
   dedicated             = var.dedicated
+  flex_shape_ocpus      = var.node_flex_shape_ocpus
+  flex_shape_memory     = var.node_flex_shape_memory
 }
 
 module "magento" {
