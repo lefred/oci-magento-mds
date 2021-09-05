@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql Shell."
-  default     = "8.0.23"
+  default     = "8.0.26"
 }
 
 variable "ssh_authorized_keys" {

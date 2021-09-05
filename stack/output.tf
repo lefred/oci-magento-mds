@@ -20,6 +20,7 @@ output "opendistro_private_ip" {
 
 output "instance_ssh_keys" {
   value = local.private_key_to_show
+  sensitive = true
 }
 
 output "magento_admin_login" {
