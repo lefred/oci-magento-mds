@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql Shell."
-  default     = "8.0.26"
+  default     = "8.0.28"
 }
 
 variable "ssh_authorized_keys" {
@@ -80,3 +80,4 @@ variable "magento_admin_lastname" {
 variable "magento_admin_email" {
   description = "Magento Admin Email"
 }
+

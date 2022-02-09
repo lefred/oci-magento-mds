@@ -1,6 +1,6 @@
 variable "mysql_version" {
   description = "The version of the Mysql Shell."
-  default     = "8.0.26"
+  default     = "8.0.28"
 }
 
 variable "compartment_ocid" {
@@ -114,7 +114,9 @@ locals {
     "VM.Standard.E3.Flex",
     "VM.Standard.E4.Flex",
     "VM.Standard.A1.Flex",
-    "VM.Optimized3.Flex"
+    "VM.Optimized3.Flex",
+    "VM.Standard3.Flex",
+    "VM.Standard4.Flex"   
   ]
 }
 
